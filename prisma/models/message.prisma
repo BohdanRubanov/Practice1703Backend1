@@ -1,0 +1,14 @@
+model Message {
+  id                  Int      @id() @unique() @default(autoincrement())
+  type                String
+  text                String?
+  mediaUrl            String?
+  sender              User     @relation(fields: [senderId], references: [id])
+  senderId            Int
+  chat                Chat     @relation(fields: [chatId], references: [id])
+  chatId              Int
+  chatAsLastMessage   Chat?    @relation(name: "chatLastMessage")
+  chatAsLastMessageId Int 
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @default(now())
+}
