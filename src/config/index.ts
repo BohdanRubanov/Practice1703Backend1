@@ -1,2 +1,2 @@
 export { ENV } from "./env";
-export {uploadDir} from "./path"
+export { uploadDir } from "./path";

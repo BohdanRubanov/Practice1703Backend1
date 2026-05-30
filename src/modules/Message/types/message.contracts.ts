@@ -1,65 +1,36 @@
 import type { NextFunction, Request, Response } from "express";
-import {
-	IMessage,
-	IMessageWithPagination,
-	IPaginationData,
-	IMessageCreate,
-} from "./message.types";
+import { IMessage, IMessageWithPagination, IPaginationData, IMessageCreate, IMessagePayload, } from "./message.types";
 import { AuthenticatedSocket, ServerSocket } from "../../Socket/socket.types";
-
 export interface MessageControllerContract {
-	getChatMessages: (
-		req: Request<
-			{ chatId: string },
-			IMessage | string,
-			object,
-			{ page: string },
-			{ userId: number }
-		>,
-
-		res: Response<// IMessage[] | string
-		IMessageWithPagination>,
-		next: NextFunction,
-	) => void;
+    getChatMessages: (req: Request<{
+        chatId: string;
+    }, IMessageWithPagination | string, object, {
+        cursor?: string;
+        limit?: string;
+    }, {
+        userId: number;
+    }>, res: Response<IMessageWithPagination | string, {
+        userId: number;
+    }>, next: NextFunction) => void;
 }
-
 export interface MessageServiceContract {
-	// getChatMessages: (chatId: number) => Promise<IMessage[]>
-	getChatMessages: (
-		chatId: number,
-		pagination: IPaginationData,
-	) => Promise<IMessageWithPagination>;
-	getAllByChatId: (chatId: number) => Promise<IMessageWithPagination>;
-	create: (data: IMessageCreate) => Promise<IMessage>;
+    getChatMessages: (chatId: number, userId: number, pagination: IPaginationData) => Promise<IMessageWithPagination>;
+    getAllByChatId: (chatId: number) => Promise<IMessageWithPagination>;
+    create: (data: IMessageCreate) => Promise<IMessage>;
 }
-
 export interface MessageRepositoryContract {
-	// getChatMessages: (chatId: number) => Promise<IMessage[]>
-	getChatMessages: (
-		chatId: number,
-		pagination: IPaginationData,
-	) => Promise<IMessageWithPagination>;
-	getAllByChatId: (chatId: number) => Promise<IMessageWithPagination>;
-	create: (data: IMessageCreate) => Promise<IMessage>;
+    getChatMessages: (chatId: number, pagination: IPaginationData) => Promise<IMessageWithPagination>;
+    getAllByChatId: (chatId: number) => Promise<IMessageWithPagination>;
+    create: (data: IMessageCreate) => Promise<IMessage>;
 }
-
 export interface MessageClientEvents {
-		sendMessage: (data: IMessageCreate) => void;
-	}
-
+    sendMessage: (data: IMessagePayload) => void;
+}
 export interface MessageServerEvents {
-		newMessage: (data: IMessage) => void;
-	}
-
+    newChatMessage: (data: IMessage) => void;
+}
 export interface MessageSocketControllerContract {
-		registerHandlers: (
-			socketServer: ServerSocket,
-			socket: AuthenticatedSocket,
-		) => void;
-		sendMessage: (
-			socketServer: ServerSocket,
-			socket: AuthenticatedSocket,
-			data: IMessageCreate,
-		) => void;
-		newMessage: (socketServer: ServerSocket, message: IMessage) => void;
-	}
+    registerHandlers: (socketServer: ServerSocket, socket: AuthenticatedSocket) => void;
+    sendMessage: (socketServer: ServerSocket, socket: AuthenticatedSocket, data: IMessagePayload) => void;
+    newChatMessage: (socketServer: ServerSocket, message: IMessage) => void;
+}
