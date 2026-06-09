@@ -20,6 +20,7 @@ export const ChatRepository: ChatRepositoryContract = {
                                 name: true,
                                 surname: true,
                                 avatar: true,
+                                lastSeenAt: true,
                                 contactOf: {
                                     where: { ownerId: userId },
                                     select: {
@@ -142,5 +143,60 @@ export const ChatRepository: ChatRepositoryContract = {
             },
         });
         return createdChat;
-    }
+    },
+    async getChatInfoById(chatId, ownerId) {
+        const chat = await client.chat.findUnique({
+            where: {
+                id: chatId
+            },
+            include: {
+                participants: {
+                    where: {
+                        NOT: {
+                            userId: ownerId
+                        }
+                    },
+                    include: {
+                        user: {
+                            select: {
+                                id: true,
+                                name: true,
+                                surname: true,
+                                avatar: true,
+                                lastSeenAt: true,
+                                contactOf: {
+                                    select: {
+                                        id: true,
+                                        contactName: true,
+                                        contactSurname: true,
+                                        avatar: true,
+                                        addedAt: true
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+                lastMessage: {
+                    select: {
+                        id: true,
+                        type: true,
+                        text: true,
+                        mediaUrl: true,
+                        senderId: true,
+                        chatId: true,
+                        chatAsLastMessageId: true,
+                        createdAt: true,
+                        updatedAt: true,
+                        sender: {
+                            select: {
+                                name: true,
+                            }
+                        }
+                    }
+                }
+            }
+        })
+        return chat
+    },
 };

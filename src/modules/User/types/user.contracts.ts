@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
-import type { User, UserCreateInput, UserUpdateInput, UserWhereUniqueInput, UserWithoutPassword, } from "./user.types";
+import type {  User, UserCallback, UserCreateInput, UserPayload, UserUpdateInput, UserWhereUniqueInput, UserWithoutPassword, } from "./user.types";
 import type { InferType } from "yup";
 import type { UserSchema } from "../user.schema";
 import type { AuthenticatedSocket, ServerSocket } from "../../Socket/socket.types";
@@ -41,6 +41,7 @@ export interface UserServiceContract {
     }>;
     me: (id: number) => Promise<UserWithoutPassword>;
     getUserByUsername: (username: string) => Promise<UserWithoutPassword>;
+    updateLastSeenAt: (id: number) => Promise<User>;
 }
 export interface UserRepositoryContract {
     getByEmail: (email: string) => Promise<User | null>;
@@ -50,5 +51,11 @@ export interface UserRepositoryContract {
     update: (where: UserWhereUniqueInput, data: UserUpdateInput) => Promise<User>;
 }
 export interface UserSocketControllerContract {
-    registerHandlers: (socketServer: ServerSocket, socket: AuthenticatedSocket) => void;
+    registerHandlers: (socket: AuthenticatedSocket, socketServer: ServerSocket) => void;
+    isUserOnline: (userId: number, socketServer: ServerSocket) => Promise<boolean>;
+    getUsersOnline: (socketServer: ServerSocket, data: UserPayload, ack?: UserCallback) => void
+}
+
+export interface UserEvents {
+    getUsersOnline: (data: UserPayload, ack?: UserCallback) => void;
 }

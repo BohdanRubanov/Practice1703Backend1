@@ -11,6 +11,7 @@ export const UserController: UserControllerContract = {
             next(err);
         }
     },
+    
     async register(req, res, next) {
         try {
             const data = req.body;

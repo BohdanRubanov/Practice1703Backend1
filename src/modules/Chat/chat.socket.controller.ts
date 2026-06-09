@@ -1,6 +1,8 @@
 import { AppError } from "../../errors";
+import { UserService } from "../User/user.service";
 import { ChatService } from "./chat.service";
 import { ChatSocketControllerContract } from "./types/chat.contracts";
+
 export const ChatSocketController: ChatSocketControllerContract = {
     registerHandlers(socket) {
         socket.on("joinChat", (data, ack) => {
@@ -48,5 +50,23 @@ export const ChatSocketController: ChatSocketControllerContract = {
     },
     leaveChat(socket, data) {
         socket.leave(`chat-${data.chatId}`);
+    },
+    async chatUpdate(socketServer, socket, data){
+        try {
+            const chat = await ChatService.getChatInfoById(data.chatId, socket.data.userId)
+            chat.participants.forEach((participant) => {
+                if (socketServer.sockets.adapter.rooms.has(`user_${participant.userId}`)){
+                    socketServer.to(`user_${participant.userId}`).emit("chatUpdate",{lastMessage: chat.lastMessage})
+                }
+            }) 
+            if (socketServer.sockets.adapter.rooms.has(`user_${socket.data.userId}`)){
+                socketServer.to(`user_${socket.data.userId}`).emit("chatUpdate",{lastMessage: chat.lastMessage})
+            }
+        
+        }catch(error){
+            console.log(error)
+        }
     }
-};
+    }
+
+

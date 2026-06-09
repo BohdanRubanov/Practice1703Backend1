@@ -47,4 +47,7 @@ export const UserService: UserServiceContract = {
         }
         return user;
     },
+    async updateLastSeenAt(id) {
+        return await UserRepository.update({ id }, { lastSeenAt: new Date() });
+    },
 };

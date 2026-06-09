@@ -29,6 +29,7 @@ export const UserRepository: UserRepositoryContract = {
                     avatar: true,
                     name: true,
                     surname: true,
+                    lastSeenAt: true,
                 },
             });
         }
@@ -64,6 +65,7 @@ export const UserRepository: UserRepositoryContract = {
                     avatar: true,
                     name: true,
                     surname: true,
+                    lastSeenAt: true,
                 },
             });
         }

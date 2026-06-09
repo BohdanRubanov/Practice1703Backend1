@@ -35,5 +35,12 @@ export const ChatService: ChatServiceContract = {
             return createdChat;
         }
         return ifChatExists;
-    }
+    },
+    getChatInfoById: async (chatId, ownerId) => {
+        const chatWithLastMessage = await ChatRepository.getChatInfoById(chatId, ownerId)     
+        if (!chatWithLastMessage){
+            throw new NotFoundError("Chat")
+        }   
+        return chatWithLastMessage
+    },
 };
