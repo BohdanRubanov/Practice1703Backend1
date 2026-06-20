@@ -1,4 +1,5 @@
 import { MessageService } from "./message.service";
+import { ChatSocketController } from "../Chat/chat.socket.controller";
 import type { MessageSocketControllerContract } from "./types/message.contracts";
 export const MessageSocketController: MessageSocketControllerContract = {
 	registerHandlers(socketServer, socket) {
@@ -21,6 +22,9 @@ export const MessageSocketController: MessageSocketControllerContract = {
 					updatedAt: new Date(),
 				};
 				this.newChatMessage(socketServer, mediaMessage);
+				ChatSocketController.chatUpdate(socketServer, socket, {
+					chatId: data.chatId,
+				});
 				return;
 			}
 			const message = await MessageService.create({
@@ -28,6 +32,9 @@ export const MessageSocketController: MessageSocketControllerContract = {
 				senderId: socket.data.userId,
 			});
 			this.newChatMessage(socketServer, message);
+			ChatSocketController.chatUpdate(socketServer, socket, {
+				chatId: data.chatId,
+			});
 		} catch (error) {
 			console.log(error);
 		}

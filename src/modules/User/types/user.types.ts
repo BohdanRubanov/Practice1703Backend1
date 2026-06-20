@@ -6,19 +6,11 @@ export type UserUpdateInput = Prisma.UserUpdateInput;
 export type UserWhereUniqueInput = Prisma.UserWhereUniqueInput;
 
 export type UserStatus = {
-        id: number,
-        status: "online" | "offline"
-    }
+	userId: number;
+	status: "online" | "offline";
+};
 
-export type UserCallback = (response: {
-    userStatuses: UserStatus[] 
-} | {
-    status: "error";
-    message?: string;
+export type SubscribeAndGetInitialStatuses = (response: {
+	statuses: UserStatus[];
 }) => void;
-export interface UserPayload {
-    userIds: number[];
-}
-// export interface UserClientEvents {
-//     getOnlineUsers: 
-// }
+export type GetOnlineUserCallback = (response: UserStatus) => void;

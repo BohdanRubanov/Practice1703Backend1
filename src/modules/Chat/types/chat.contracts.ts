@@ -17,7 +17,7 @@ import type {
 } from "./chat.types";
 
 export interface ChatServerEvents {
-	chatUpdate: (data: ILastMessage) => void;
+	chatUpdate: (data: IChatWithUsers) => void;
 }
 
 export interface ChatControllerContract {

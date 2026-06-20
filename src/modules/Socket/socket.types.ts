@@ -5,7 +5,7 @@ import type {
 	MessageClientEvents,
 	MessageServerEvents,
 } from "../Message/types/message.contracts";
-import { UserEvents, UserServerEvents } from "../User";
+import type { UserClientEvents, UserServerEvents } from "../User";
 
 export interface SocketManagerContract {
 	socketServer: ServerSocket | null;
@@ -14,7 +14,7 @@ export interface SocketManagerContract {
 export type ServerEvents = MessageServerEvents & ChatServerEvents & UserServerEvents;
 export type ClientEvents = ChatClientEvents &
 	MessageClientEvents &
-	UserEvents;
+	UserClientEvents;
 export interface SocketData {
 	userId: number;
 }
