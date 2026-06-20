@@ -5,13 +5,13 @@ import type {
 	MessageClientEvents,
 	MessageServerEvents,
 } from "../Message/types/message.contracts";
-import { UserEvents } from "../User";
+import { UserEvents, UserServerEvents } from "../User";
 
 export interface SocketManagerContract {
 	socketServer: ServerSocket | null;
 	initSocketServer: (httpServer: Server) => void;
 }
-export type ServerEvents = MessageServerEvents & ChatServerEvents;
+export type ServerEvents = MessageServerEvents & ChatServerEvents & UserServerEvents;
 export type ClientEvents = ChatClientEvents &
 	MessageClientEvents &
 	UserEvents;

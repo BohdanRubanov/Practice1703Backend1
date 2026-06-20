@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
-import type {  User, UserCallback, UserCreateInput, UserPayload, UserUpdateInput, UserWhereUniqueInput, UserWithoutPassword, } from "./user.types";
+import type {  User, UserCallback, UserCreateInput, UserPayload, UserStatus, UserUpdateInput, UserWhereUniqueInput, UserWithoutPassword, } from "./user.types";
 import type { InferType } from "yup";
 import type { UserSchema } from "../user.schema";
 import type { AuthenticatedSocket, ServerSocket } from "../../Socket/socket.types";
@@ -51,11 +51,16 @@ export interface UserRepositoryContract {
     update: (where: UserWhereUniqueInput, data: UserUpdateInput) => Promise<User>;
 }
 export interface UserSocketControllerContract {
+    subscriptions: Map<number, Set<number>>,
     registerHandlers: (socket: AuthenticatedSocket, socketServer: ServerSocket) => void;
     isUserOnline: (userId: number, socketServer: ServerSocket) => Promise<boolean>;
-    getUsersOnline: (socketServer: ServerSocket, data: UserPayload, ack?: UserCallback) => void
+    subscribeAndGetStatuses: (socket: AuthenticatedSocket, socketServer: ServerSocket, data: UserPayload, ack?: UserCallback) => void
+    notifySubscribers: (socket: AuthenticatedSocket, socketServer: ServerSocket, status: "online" | "offline") => void
 }
 
 export interface UserEvents {
-    getUsersOnline: (data: UserPayload, ack?: UserCallback) => void;
+    subscribeAndGetStatuses: (data: UserPayload, ack?: UserCallback) => void;
+}
+export interface UserServerEvents {
+    statusUpdate: (data: UserStatus) => void
 }
